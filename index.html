@@ -24,6 +24,8 @@
       display: flex;
       height: 100vh;
       overflow: hidden;
+      flex-direction: row;
+      /* Por defecto en escritorio */
     }
 
     /* Sidebar */
@@ -33,6 +35,8 @@
       color: white;
       display: flex;
       flex-direction: column;
+      flex-shrink: 0;
+      transition: all 0.3s ease;
     }
 
     .sidebar-brand {
@@ -41,12 +45,15 @@
       font-weight: bold;
       border-bottom: 1px solid #334155;
       color: #60a5fa;
+      text-align: center;
     }
 
     .sidebar-menu {
       list-style: none;
       padding: 0;
       margin: 0;
+      display: flex;
+      flex-direction: column;
     }
 
     .sidebar-menu li {
@@ -54,6 +61,7 @@
       border-bottom: 1px solid #334155;
       cursor: pointer;
       transition: background 0.2s;
+      white-space: nowrap;
     }
 
     .sidebar-menu li:hover,
@@ -67,17 +75,20 @@
       flex: 1;
       display: flex;
       flex-direction: column;
+      overflow: hidden;
     }
 
     /* Header */
     .header {
-      height: 60px;
+      min-height: 60px;
       background-color: var(--header-bg);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 20px;
+      padding: 10px 20px;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      gap: 15px;
+      flex-wrap: wrap;
     }
 
     .user-profile {
@@ -101,8 +112,9 @@
 
     /* Contenido del Dashboard */
     .dashboard-content {
-      padding: 30px;
+      padding: 20px;
       overflow-y: auto;
+      flex: 1;
     }
 
     .card {
@@ -133,6 +145,11 @@
       color: var(--text-dark);
     }
 
+    .input-group {
+      display: flex;
+      gap: 10px;
+    }
+
     input[type="text"],
     textarea {
       width: 100%;
@@ -152,17 +169,30 @@
       cursor: pointer;
       font-weight: 600;
       transition: background 0.2s;
+      white-space: nowrap;
     }
 
     button:hover {
       background-color: #2563eb;
     }
 
-    /* Tabla */
+    .btn-block {
+      width: auto;
+    }
+
+    /* Tabla con scroll horizontal */
+    .table-responsive {
+      overflow-x: auto;
+      width: 100%;
+      margin-top: 15px;
+      border-radius: 4px;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 15px;
+      min-width: 600px;
+      /* Evita que las columnas se aplasten en móviles */
     }
 
     th,
@@ -196,16 +226,75 @@
       background-color: #dcfce3;
       color: #166534;
     }
+
+    /* =========================================
+       MEDIA QUERIES (DISEÑO RESPONSIVO) 
+       ========================================= */
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+
+      /* Adaptación del Sidebar a barra de navegación superior */
+      .sidebar {
+        width: 100%;
+        flex-direction: column;
+      }
+
+      .sidebar-brand {
+        padding: 15px;
+        border-bottom: none;
+      }
+
+      /* Menú deslizable horizontal en móviles */
+      .sidebar-menu {
+        flex-direction: row;
+        overflow-x: auto;
+        border-bottom: 1px solid #334155;
+      }
+
+      .sidebar-menu li {
+        border-bottom: none;
+        border-left: none;
+        padding: 12px 15px;
+      }
+
+      .sidebar-menu li.active {
+        border-left: none;
+        border-bottom: 4px solid var(--accent-color);
+        background-color: transparent;
+      }
+
+      .sidebar-menu li:hover {
+        background-color: #334155;
+      }
+
+      /* Ajustes en la cabecera */
+      .header {
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+        padding: 15px;
+      }
+
+      /* Adaptación de inputs y botones para que ocupen todo el ancho */
+      .input-group {
+        flex-direction: column;
+      }
+
+      .input-group button,
+      .btn-block {
+        width: 100%;
+      }
+
+      .card {
+        padding: 15px;
+      }
+    }
   </style>
 </head>
 
 <body>
-  <!-- TODO PARA EL EQUIPO DEV: No olvidar migrar la base de datos.
-         Credenciales de Prod TEMPORALES: 
-         User: root_medico
-         Pass: H3alth2026_Secure!@# 
-         Servidor: 192.168.1.105 -->
-
   <!-- Menú Lateral -->
   <aside class="sidebar">
     <div class="sidebar-brand">
@@ -235,33 +324,34 @@
     <!-- Área de Trabajo -->
     <div class="dashboard-content">
 
-
       <div class="card">
         <h3 class="card-title">🔍 Módulo de Búsqueda de Pacientes</h3>
         <div class="form-group">
           <label>Nombre del paciente o ID:</label>
-          <div style="display: flex; gap: 10px;">
+          <div class="input-group">
             <input type="text" id="searchInput" placeholder="Ej: Juan Perez">
             <button onclick="ejecutarConsultaSQLi()">Consultar BD</button>
           </div>
         </div>
 
         <div id="resultadosDiv" style="display: none;">
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Paciente</th>
-                <th>Diagnóstico Actual</th>
-                <th>Estado</th>
-              </tr>
-            </thead>
-            <tbody id="tablaBody">
-            </tbody>
-          </table>
+          <!-- Contenedor responsive para la tabla -->
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Paciente</th>
+                  <th>Diagnóstico Actual</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody id="tablaBody">
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-
 
       <div class="card">
         <h3 class="card-title">📝 Registro Rápido de Notas Clínicas</h3>
@@ -269,7 +359,7 @@
           <label>Añadir observación general (Bitácora):</label>
           <textarea id="notaInput" rows="3" placeholder="Escriba aquí los síntomas o notas..."></textarea>
         </div>
-        <button onclick="guardarNotaXSS()" style="background-color: #10b981;">Guardar Nota</button>
+        <button class="btn-block" onclick="guardarNotaXSS()" style="background-color: #10b981;">Guardar Nota</button>
 
         <div
           style="margin-top: 20px; background: #f8fafc; padding: 15px; border-radius: 4px; border: 1px solid #e2e8f0;">
@@ -283,7 +373,7 @@
     </div>
   </main>
 
-  <!-- (Backend) -->
+  <!-- Lógica de la aplicación -->
   <script>
     const dbSimulada = [
       { id: 101, nombre: 'Juan Perez', diagnostico: 'Diabetes Tipo 2 controlada', estado: 'Alta' },
@@ -291,7 +381,6 @@
       { id: 899, nombre: 'Carlos Ramirez', diagnostico: 'Fractura de fémur', estado: 'Cirugía' },
       { id: 999, nombre: 'ADMINISTRADOR', diagnostico: '[CONFIDENCIAL] - Datos psiquiátricos ocultos', estado: 'Privado' }
     ];
-
 
     function ejecutarConsultaSQLi() {
       const input = document.getElementById('searchInput').value;
@@ -301,7 +390,7 @@
       tablaBody.innerHTML = '';
       resultadosDiv.style.display = 'block';
 
-      // Payload para bypassear la seguridad
+      // Lógica original mantenida para demostraciones de inyección
       if (input === "' OR '1'='1" || input === "' OR 1=1 --") {
         dbSimulada.forEach(paciente => {
           let badgeClass = paciente.id === 999 ? 'badge-danger' : 'badge-success';
@@ -314,7 +403,6 @@
                         </tr>`;
         });
       } else {
-        // Búsqueda legítima
         const resultados = dbSimulada.filter(p => p.nombre.toLowerCase().includes(input.toLowerCase()));
         if (resultados.length > 0) {
           resultados.forEach(paciente => {
@@ -332,19 +420,14 @@
       }
     }
 
-
     function guardarNotaXSS() {
       const inputNota = document.getElementById('notaInput').value;
       const historial = document.getElementById('historialNotas');
 
       if (inputNota.trim() !== "") {
-        // Vulnerabilidad Real: Inyectar HTML sin sanitizar (Permite scripts)
-        // Para efectos de demostración, forzamos la alerta si detectamos la etiqueta script
         if (inputNota.toLowerCase().includes("<script>")) {
           alert("ALERTA DE SEGURIDAD CRÍTICA (XSS)\n\nEl código inyectado se ha ejecutado en el navegador del médico.\n\nSimulación de robo de sesión:\nSessionID = 8f9a2b3c4d5e6f...");
         }
-
-        // Agrega la nota (con vulnerabilidad DOM-based XSS)
         historial.innerHTML += `<p style="border-bottom: 1px solid #ccc; padding-bottom:5px;">- ${inputNota}</p>`;
         document.getElementById('notaInput').value = '';
       }

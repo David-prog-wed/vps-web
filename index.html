@@ -1,1 +1,190 @@
-<h1>Hola desde decg3.com - prueba 6 CI/CD</h1>
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HealthRecord Pro - Auditoría</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 40px;
+      background-color: #f4f7f6;
+      color: #333;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    h2 {
+      color: #2c3e50;
+      border-bottom: 2px solid #eee;
+      padding-bottom: 10px;
+    }
+
+    .danger-alert {
+      background-color: #fdf3f2;
+      border-left: 5px solid #e74c3c;
+      padding: 15px;
+      margin-bottom: 25px;
+      color: #c0392b;
+      font-weight: 500;
+    }
+
+    .search-box {
+      margin-bottom: 20px;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      width: 60%;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
+      background-color: white;
+    }
+
+    th,
+    td {
+      border: 1px solid #e0e0e0;
+      padding: 12px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f8f9fa;
+      color: #333;
+      font-weight: 600;
+    }
+
+    .confidential {
+      color: #e74c3c;
+      font-weight: bold;
+    }
+
+    .query-log {
+      font-family: monospace;
+      background: #2c3e50;
+      color: #2ecc71;
+      padding: 10px;
+      border-radius: 4px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h2>HealthRecord Pro - Entorno de Pruebas (decg3.com)</h2>
+    <div class="danger-alert">
+      ⚠️ ADVERTENCIA: Este módulo de consulta está configurado intencionalmente sin sanitización de entradas para
+      propósitos de auditoría de seguridad.
+    </div>
+
+    <div class="search-box">
+      <label><strong>Buscar paciente por nombre:</strong></label><br><br>
+      <input type="text" id="searchInput" placeholder="Ej: Juan">
+      <button onclick="ejecutarConsulta()">Buscar en BD</button>
+    </div>
+
+    <div id="resultadosDiv" style="display: none;">
+      <h3>Resultados de la consulta:</h3>
+      <p><strong>Consulta ejecutada en el backend:</strong></p>
+      <div class="query-log" id="sqlQuery"></div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre del Paciente</th>
+            <th>Diagnóstico Médico</th>
+            <th>Número de Seguro Social</th>
+          </tr>
+        </thead>
+        <tbody id="tablaBody">
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    // Simulación de la base de datos en memoria
+    const dbSimulada = [
+      { id: 101, nombre: 'Juan Perez', diagnostico: 'Diabetes Tipo 2', ssn: '123-456-789' },
+      { id: 102, nombre: 'Maria Lopez', diagnostico: 'Hipertension Arterial', ssn: '987-654-321' },
+      { id: 103, nombre: 'Admin Sistema', diagnostico: 'Confidencial - VIH Positivo', ssn: '000-000-000' }
+    ];
+
+    function ejecutarConsulta() {
+      const input = document.getElementById('searchInput').value;
+      const resultadosDiv = document.getElementById('resultadosDiv');
+      const tablaBody = document.getElementById('tablaBody');
+      const sqlQueryText = document.getElementById('sqlQuery');
+
+      // Limpiar resultados anteriores
+      tablaBody.innerHTML = '';
+      resultadosDiv.style.display = 'block';
+
+      // Mostrar cómo se vería la consulta concatenada (Vulnerabilidad)
+      sqlQueryText.innerText = `SELECT * FROM pacientes WHERE nombre = '${input}';`;
+
+      // Lógica que simula el fallo de seguridad (Inyección SQL)
+      if (input === "' OR '1'='1" || input === "' OR 1=1 --") {
+        // El payload malicioso bypassa el filtro y devuelve todos los registros
+        dbSimulada.forEach(paciente => {
+          tablaBody.innerHTML += `
+                        <tr>
+                            <td>${paciente.id}</td>
+                            <td>${paciente.nombre}</td>
+                            <td class="${paciente.id === 103 ? 'confidential' : ''}">${paciente.diagnostico}</td>
+                            <td>${paciente.ssn}</td>
+                        </tr>`;
+        });
+      } else {
+        // Búsqueda normal
+        const resultados = dbSimulada.filter(p => p.nombre.toLowerCase().includes(input.toLowerCase()));
+        if (resultados.length > 0) {
+          resultados.forEach(paciente => {
+            tablaBody.innerHTML += `
+                            <tr>
+                                <td>${paciente.id}</td>
+                                <td>${paciente.nombre}</td>
+                                <td>${paciente.diagnostico}</td>
+                                <td>${paciente.ssn}</td>
+                            </tr>`;
+          });
+        } else {
+          tablaBody.innerHTML = `<tr><td colspan="4" style="text-align:center;">No se encontraron registros.</td></tr>`;
+        }
+      }
+    }
+  </script>
+</body>
+
+</html>

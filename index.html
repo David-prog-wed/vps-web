@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HealthRecord Pro - Auditoría</title>
+  <title>HealthRecord Pro</title>
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -26,15 +26,6 @@
       color: #2c3e50;
       border-bottom: 2px solid #eee;
       padding-bottom: 10px;
-    }
-
-    .danger-alert {
-      background-color: #fdf3f2;
-      border-left: 5px solid #e74c3c;
-      padding: 15px;
-      margin-bottom: 25px;
-      color: #c0392b;
-      font-weight: 500;
     }
 
     .search-box {
@@ -87,15 +78,6 @@
       color: #e74c3c;
       font-weight: bold;
     }
-
-    .query-log {
-      font-family: monospace;
-      background: #2c3e50;
-      color: #2ecc71;
-      padding: 10px;
-      border-radius: 4px;
-      margin-top: 10px;
-    }
   </style>
 </head>
 
@@ -106,13 +88,11 @@
     <div class="search-box">
       <label><strong>Buscar paciente por nombre:</strong></label><br><br>
       <input type="text" id="searchInput" placeholder="Ej: Juan">
-      <button onclick="ejecutarConsulta()">Buscar en BD</button>
+      <button onclick="ejecutarConsulta()">Buscar paciente</button>
     </div>
 
     <div id="resultadosDiv" style="display: none;">
-      <h3>Resultados de la consulta:</h3>
-      <p><strong>Consulta ejecutada en el backend:</strong></p>
-      <div class="query-log" id="sqlQuery"></div>
+      <h3>Pacientes encontrados:</h3>
 
       <table>
         <thead>
@@ -141,26 +121,21 @@
       const input = document.getElementById('searchInput').value;
       const resultadosDiv = document.getElementById('resultadosDiv');
       const tablaBody = document.getElementById('tablaBody');
-      const sqlQueryText = document.getElementById('sqlQuery');
 
       // Limpiar resultados anteriores
       tablaBody.innerHTML = '';
       resultadosDiv.style.display = 'block';
 
-      // Mostrar cómo se vería la consulta concatenada (Vulnerabilidad)
-      sqlQueryText.innerText = `SELECT * FROM pacientes WHERE nombre = '${input}';`;
-
       // Lógica que simula el fallo de seguridad (Inyección SQL)
       if (input === "' OR '1'='1" || input === "' OR 1=1 --") {
-        // El payload malicioso bypassa el filtro y devuelve todos los registros
         dbSimulada.forEach(paciente => {
           tablaBody.innerHTML += `
-                        <tr>
-                            <td>${paciente.id}</td>
-                            <td>${paciente.nombre}</td>
-                            <td class="${paciente.id === 103 ? 'confidential' : ''}">${paciente.diagnostico}</td>
-                            <td>${paciente.ssn}</td>
-                        </tr>`;
+            <tr>
+                <td>${paciente.id}</td>
+                <td>${paciente.nombre}</td>
+                <td class="${paciente.id === 103 ? 'confidential' : ''}">${paciente.diagnostico}</td>
+                <td>${paciente.ssn}</td>
+            </tr>`;
         });
       } else {
         // Búsqueda normal
@@ -168,12 +143,12 @@
         if (resultados.length > 0) {
           resultados.forEach(paciente => {
             tablaBody.innerHTML += `
-                            <tr>
-                                <td>${paciente.id}</td>
-                                <td>${paciente.nombre}</td>
-                                <td>${paciente.diagnostico}</td>
-                                <td>${paciente.ssn}</td>
-                            </tr>`;
+              <tr>
+                  <td>${paciente.id}</td>
+                  <td>${paciente.nombre}</td>
+                  <td>${paciente.diagnostico}</td>
+                  <td>${paciente.ssn}</td>
+              </tr>`;
           });
         } else {
           tablaBody.innerHTML = `<tr><td colspan="4" style="text-align:center;">No se encontraron registros.</td></tr>`;

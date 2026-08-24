@@ -4,155 +4,350 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HealthRecord Pro</title>
+  <title>HealthRecord Pro - Dashboard</title>
   <style>
+    /* Estilos base y variables */
+    :root {
+      --primary-bg: #f3f4f6;
+      --sidebar-bg: #1e293b;
+      --header-bg: #ffffff;
+      --accent-color: #3b82f6;
+      --text-dark: #1e293b;
+      --text-light: #94a3b8;
+      --danger: #ef4444;
+    }
+
     body {
+      margin: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      padding: 40px;
-      background-color: #f4f7f6;
-      color: #333;
+      background-color: var(--primary-bg);
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
     }
 
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      background: white;
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      background-color: var(--sidebar-bg);
+      color: white;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-brand {
+      padding: 20px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      border-bottom: 1px solid #334155;
+      color: #60a5fa;
+    }
+
+    .sidebar-menu {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sidebar-menu li {
+      padding: 15px 20px;
+      border-bottom: 1px solid #334155;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .sidebar-menu li:hover,
+    .sidebar-menu li.active {
+      background-color: #334155;
+      border-left: 4px solid var(--accent-color);
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .header {
+      height: 60px;
+      background-color: var(--header-bg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 500;
+    }
+
+    .avatar {
+      width: 35px;
+      height: 35px;
+      background-color: var(--accent-color);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    /* Contenido del Dashboard */
+    .dashboard-content {
       padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+      overflow-y: auto;
     }
 
-    h2 {
-      color: #2c3e50;
-      border-bottom: 2px solid #eee;
+    .card {
+      background-color: white;
+      border-radius: 8px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    .card-title {
+      margin-top: 0;
+      color: var(--text-dark);
+      border-bottom: 2px solid var(--primary-bg);
       padding-bottom: 10px;
-    }
-
-    .search-box {
       margin-bottom: 20px;
     }
 
-    input[type="text"] {
+    /* Formularios y Botones */
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+      color: var(--text-dark);
+    }
+
+    input[type="text"],
+    textarea {
+      width: 100%;
       padding: 10px;
-      width: 60%;
-      border: 1px solid #ccc;
+      border: 1px solid #cbd5e1;
       border-radius: 4px;
-      font-size: 16px;
+      box-sizing: border-box;
+      font-family: inherit;
     }
 
     button {
-      padding: 10px 20px;
-      background-color: #3498db;
+      background-color: var(--accent-color);
       color: white;
       border: none;
+      padding: 10px 20px;
       border-radius: 4px;
       cursor: pointer;
-      font-size: 16px;
+      font-weight: 600;
+      transition: background 0.2s;
     }
 
     button:hover {
-      background-color: #2980b9;
+      background-color: #2563eb;
     }
 
+    /* Tabla */
     table {
-      border-collapse: collapse;
       width: 100%;
-      margin-top: 20px;
-      background-color: white;
+      border-collapse: collapse;
+      margin-top: 15px;
     }
 
     th,
     td {
-      border: 1px solid #e0e0e0;
       padding: 12px;
       text-align: left;
+      border-bottom: 1px solid #e2e8f0;
     }
 
     th {
-      background-color: #f8f9fa;
-      color: #333;
+      background-color: #f8fafc;
+      color: var(--text-light);
       font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.85rem;
     }
 
-    .confidential {
-      color: #e74c3c;
+    .badge {
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.8rem;
       font-weight: bold;
+    }
+
+    .badge-danger {
+      background-color: #fee2e2;
+      color: #991b1b;
+    }
+
+    .badge-success {
+      background-color: #dcfce3;
+      color: #166534;
     }
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <h2>HealthRecord Pro</h2>
+  <!-- EXPOSICIÓN DE CÓDIGO FUENTE (Vulnerabilidad 3) -->
+  <!-- TODO PARA EL EQUIPO DEV: No olvidar migrar la base de datos.
+         Credenciales de Prod TEMPORALES: 
+         User: root_medico
+         Pass: H3alth2026_Secure!@# 
+         Servidor: 192.168.1.105 -->
 
-    <div class="search-box">
-      <label><strong>Buscar paciente por nombre:</strong></label><br><br>
-      <input type="text" id="searchInput" placeholder="Ej: Juan">
-      <button onclick="ejecutarConsulta()">Buscar paciente</button>
+  <!-- Menú Lateral -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      🏥 HealthRecord Pro
     </div>
+    <ul class="sidebar-menu">
+      <li class="active">📊 Panel Principal</li>
+      <li>👥 Pacientes</li>
+      <li>📅 Citas Médicas</li>
+      <li>⚙️ Configuraciones</li>
+    </ul>
+  </aside>
 
-    <div id="resultadosDiv" style="display: none;">
-      <h3>Pacientes encontrados:</h3>
+  <!-- Contenido Principal -->
+  <main class="main-content">
+    <!-- Barra Superior -->
+    <header class="header">
+      <div>
+        <strong>Sistema de Gestión Hospitalaria (v2.1.0)</strong>
+      </div>
+      <div class="user-profile">
+        <span>Dr. Eduardo Celis</span>
+        <div class="avatar">EC</div>
+      </div>
+    </header>
 
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nombre del Paciente</th>
-            <th>Diagnóstico Médico</th>
-            <th>Número de Seguro Social</th>
-          </tr>
-        </thead>
-        <tbody id="tablaBody">
-        </tbody>
-      </table>
+    <!-- Área de Trabajo -->
+    <div class="dashboard-content">
+
+      <!-- MÓDULO 1: Búsqueda (Vulnerable a Inyección SQL) -->
+      <div class="card">
+        <h3 class="card-title">🔍 Módulo de Búsqueda de Pacientes</h3>
+        <div class="form-group">
+          <label>Nombre del paciente o ID:</label>
+          <div style="display: flex; gap: 10px;">
+            <input type="text" id="searchInput" placeholder="Ej: Juan Perez">
+            <button onclick="ejecutarConsultaSQLi()">Consultar BD</button>
+          </div>
+        </div>
+
+        <div id="resultadosDiv" style="display: none;">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Paciente</th>
+                <th>Diagnóstico Actual</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody id="tablaBody">
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- MÓDULO 2: Notas (Vulnerable a Cross-Site Scripting XSS) -->
+      <div class="card">
+        <h3 class="card-title">📝 Registro Rápido de Notas Clínicas</h3>
+        <div class="form-group">
+          <label>Añadir observación general (Bitácora):</label>
+          <textarea id="notaInput" rows="3" placeholder="Escriba aquí los síntomas o notas..."></textarea>
+        </div>
+        <button onclick="guardarNotaXSS()" style="background-color: #10b981;">Guardar Nota</button>
+
+        <div
+          style="margin-top: 20px; background: #f8fafc; padding: 15px; border-radius: 4px; border: 1px solid #e2e8f0;">
+          <strong>Últimas notas registradas:</strong>
+          <div id="historialNotas" style="margin-top: 10px;">
+            <p><em>- Sistema inicializado correctamente (Admin)</em></p>
+          </div>
+        </div>
+      </div>
+
     </div>
-  </div>
+  </main>
 
+  <!-- LÓGICA DE LA APLICACIÓN (Simulación de Backend) -->
   <script>
-    // Simulación de la base de datos en memoria
     const dbSimulada = [
-      { id: 101, nombre: 'Juan Perez', diagnostico: 'Diabetes Tipo 2', ssn: '123-456-789' },
-      { id: 102, nombre: 'Maria Lopez', diagnostico: 'Hipertension Arterial', ssn: '987-654-321' },
-      { id: 103, nombre: 'Admin Sistema', diagnostico: 'Confidencial - VIH Positivo', ssn: '000-000-000' }
+      { id: 101, nombre: 'Juan Perez', diagnostico: 'Diabetes Tipo 2 controlada', estado: 'Alta' },
+      { id: 102, nombre: 'Maria Lopez', diagnostico: 'Hipertensión Severa', estado: 'Observación' },
+      { id: 899, nombre: 'Carlos Ramirez', diagnostico: 'Fractura de fémur', estado: 'Cirugía' },
+      { id: 999, nombre: 'ADMINISTRADOR', diagnostico: '[CONFIDENCIAL] - Datos psiquiátricos ocultos', estado: 'Privado' }
     ];
 
-    function ejecutarConsulta() {
+    // Función Vulnerable a SQL Injection
+    function ejecutarConsultaSQLi() {
       const input = document.getElementById('searchInput').value;
       const resultadosDiv = document.getElementById('resultadosDiv');
       const tablaBody = document.getElementById('tablaBody');
 
-      // Limpiar resultados anteriores
       tablaBody.innerHTML = '';
       resultadosDiv.style.display = 'block';
 
-      // Lógica que simula el fallo de seguridad (Inyección SQL)
+      // Payload para bypassear la seguridad
       if (input === "' OR '1'='1" || input === "' OR 1=1 --") {
         dbSimulada.forEach(paciente => {
+          let badgeClass = paciente.id === 999 ? 'badge-danger' : 'badge-success';
           tablaBody.innerHTML += `
-            <tr>
-                <td>${paciente.id}</td>
-                <td>${paciente.nombre}</td>
-                <td class="${paciente.id === 103 ? 'confidential' : ''}">${paciente.diagnostico}</td>
-                <td>${paciente.ssn}</td>
-            </tr>`;
+                        <tr>
+                            <td><strong>#${paciente.id}</strong></td>
+                            <td>${paciente.nombre}</td>
+                            <td style="${paciente.id === 999 ? 'color: red; font-weight: bold;' : ''}">${paciente.diagnostico}</td>
+                            <td><span class="badge ${badgeClass}">${paciente.estado}</span></td>
+                        </tr>`;
         });
       } else {
-        // Búsqueda normal
+        // Búsqueda legítima
         const resultados = dbSimulada.filter(p => p.nombre.toLowerCase().includes(input.toLowerCase()));
         if (resultados.length > 0) {
           resultados.forEach(paciente => {
             tablaBody.innerHTML += `
-              <tr>
-                  <td>${paciente.id}</td>
-                  <td>${paciente.nombre}</td>
-                  <td>${paciente.diagnostico}</td>
-                  <td>${paciente.ssn}</td>
-              </tr>`;
+                            <tr>
+                                <td><strong>#${paciente.id}</strong></td>
+                                <td>${paciente.nombre}</td>
+                                <td>${paciente.diagnostico}</td>
+                                <td><span class="badge badge-success">${paciente.estado}</span></td>
+                            </tr>`;
           });
         } else {
-          tablaBody.innerHTML = `<tr><td colspan="4" style="text-align:center;">No se encontraron registros.</td></tr>`;
+          tablaBody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 20px;">No se encontraron registros en la base de datos.</td></tr>`;
         }
+      }
+    }
+
+    // Función Vulnerable a XSS (Cross Site Scripting)
+    function guardarNotaXSS() {
+      const inputNota = document.getElementById('notaInput').value;
+      const historial = document.getElementById('historialNotas');
+
+      if (inputNota.trim() !== "") {
+        // Vulnerabilidad Real: Inyectar HTML sin sanitizar (Permite scripts)
+        // Para efectos de demostración, forzamos la alerta si detectamos la etiqueta script
+        if (inputNota.toLowerCase().includes("<script>")) {
+          alert("ALERTA DE SEGURIDAD CRÍTICA (XSS)\n\nEl código inyectado se ha ejecutado en el navegador del médico.\n\nSimulación de robo de sesión:\nSessionID = 8f9a2b3c4d5e6f...");
+        }
+
+        // Agrega la nota (con vulnerabilidad DOM-based XSS)
+        historial.innerHTML += `<p style="border-bottom: 1px solid #ccc; padding-bottom:5px;">- ${inputNota}</p>`;
+        document.getElementById('notaInput').value = '';
       }
     }
   </script>

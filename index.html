@@ -200,7 +200,6 @@
 </head>
 
 <body>
-  <!-- EXPOSICIÓN DE CÓDIGO FUENTE (Vulnerabilidad 3) -->
   <!-- TODO PARA EL EQUIPO DEV: No olvidar migrar la base de datos.
          Credenciales de Prod TEMPORALES: 
          User: root_medico
@@ -228,7 +227,7 @@
         <strong>Sistema de Gestión Hospitalaria (v2.1.0)</strong>
       </div>
       <div class="user-profile">
-        <span>Dr. Eduardo Celis</span>
+        <span>Dr. David Celis</span>
         <div class="avatar">EC</div>
       </div>
     </header>
@@ -236,7 +235,7 @@
     <!-- Área de Trabajo -->
     <div class="dashboard-content">
 
-      <!-- MÓDULO 1: Búsqueda (Vulnerable a Inyección SQL) -->
+
       <div class="card">
         <h3 class="card-title">🔍 Módulo de Búsqueda de Pacientes</h3>
         <div class="form-group">
@@ -263,7 +262,7 @@
         </div>
       </div>
 
-      <!-- MÓDULO 2: Notas (Vulnerable a Cross-Site Scripting XSS) -->
+
       <div class="card">
         <h3 class="card-title">📝 Registro Rápido de Notas Clínicas</h3>
         <div class="form-group">
@@ -284,7 +283,7 @@
     </div>
   </main>
 
-  <!-- LÓGICA DE LA APLICACIÓN (Simulación de Backend) -->
+  <!-- (Backend) -->
   <script>
     const dbSimulada = [
       { id: 101, nombre: 'Juan Perez', diagnostico: 'Diabetes Tipo 2 controlada', estado: 'Alta' },
@@ -293,7 +292,7 @@
       { id: 999, nombre: 'ADMINISTRADOR', diagnostico: '[CONFIDENCIAL] - Datos psiquiátricos ocultos', estado: 'Privado' }
     ];
 
-    // Función Vulnerable a SQL Injection
+
     function ejecutarConsultaSQLi() {
       const input = document.getElementById('searchInput').value;
       const resultadosDiv = document.getElementById('resultadosDiv');
@@ -333,7 +332,7 @@
       }
     }
 
-    // Función Vulnerable a XSS (Cross Site Scripting)
+
     function guardarNotaXSS() {
       const inputNota = document.getElementById('notaInput').value;
       const historial = document.getElementById('historialNotas');
